@@ -13,6 +13,8 @@
 
 package individual.zh.springai.controller;
 
+import lombok.RequiredArgsConstructor;
+import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -31,13 +33,28 @@ import org.springframework.web.bind.annotation.RestController;
  * @Description: TODO
  * @Version: 1.0
  */
+@RequiredArgsConstructor
 @RestController
 @RequestMapping("/springai")
 public class SpringAiController {
 
-    @GetMapping("/hello")
-    public String hello() {
-        return "hello world";
+    private final ChatClient client;
+
+    /**
+     * 聊天
+     *
+     * @param prompt
+     * @return {@link String}
+     * @throws Exception
+     * @title chat
+     * @description
+     * @author zh
+     * @date 2026-04-14 22:34
+     *
+     **/
+    @GetMapping("/chat")
+    public String chat(String prompt) {
+        return client.prompt().user(prompt).call().content();
     }
 
 }
