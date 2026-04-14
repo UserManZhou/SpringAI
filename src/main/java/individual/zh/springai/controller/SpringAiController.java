@@ -18,6 +18,7 @@ import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import reactor.core.publisher.Flux;
 
 /**
  * <p>Titile:SpringAiController</p >
@@ -52,9 +53,25 @@ public class SpringAiController {
      * @date 2026-04-14 22:34
      *
      **/
-    @GetMapping("/chat")
+    @GetMapping(value = "/chat", produces = "text/html;charset=utf-8")
     public String chat(String prompt) {
         return client.prompt().user(prompt).call().content();
     }
 
+    /**
+     * 流式聊天
+     *
+     * @param prompt
+     * @return {@link Flux< String>}
+     * @throws Exception
+     * @title fluxChat
+     * @description
+     * @author zh
+     * @date 2026-04-14 23:37
+     *
+     **/
+    @RequestMapping(value = "/fluxChat", produces = "text/html;charset=utf-8")
+    public Flux<String> fluxChat(String prompt) {
+        return client.prompt().user(prompt).stream().content();
+    }
 }

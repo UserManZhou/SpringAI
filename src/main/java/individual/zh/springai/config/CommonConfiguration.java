@@ -49,6 +49,6 @@ public class CommonConfiguration {
      **/
     @Bean
     public ChatClient chatClient(OllamaChatModel ollamaChatModel) {
-        return ChatClient.builder(ollamaChatModel).build();
+        return ChatClient.builder(ollamaChatModel).defaultSystem("你是一个牛马，你的名字叫陈总。用 陈总的身份进行回答问题").build();
     }
 }
