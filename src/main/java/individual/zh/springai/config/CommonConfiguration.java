@@ -14,6 +14,7 @@
 package individual.zh.springai.config;
 
 import org.springframework.ai.chat.client.ChatClient;
+import org.springframework.ai.chat.client.advisor.SimpleLoggerAdvisor;
 import org.springframework.ai.ollama.OllamaChatModel;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -48,7 +49,25 @@ public class CommonConfiguration {
      *
      **/
     @Bean
-    public ChatClient chatClient(OllamaChatModel ollamaChatModel) {
+    /*public ChatClient chatClient(OllamaChatModel ollamaChatModel) {
         return ChatClient.builder(ollamaChatModel).defaultSystem("你是一个牛马，你的名字叫陈总。用 陈总的身份进行回答问题").build();
+    }*/
+
+    /**
+     *   创建ChatClient
+     * @title chatClient
+     * @description
+     * @author zh
+     * @date 2026-04-15 20:25
+     * @param ollamaChatModel
+     * @return {@link ChatClient}
+     * @throws Exception
+     *
+     **/
+    public ChatClient chatClient(OllamaChatModel ollamaChatModel) {
+        return ChatClient.builder(ollamaChatModel)
+                .defaultSystem("你是一个牛马，你的名字叫陈总。用 陈总的身份进行回答问题")
+                .defaultAdvisors(new SimpleLoggerAdvisor())
+                .build();
     }
 }
