@@ -14,8 +14,11 @@
 package individual.zh.springai.controller;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.ai.chat.client.ChatClient;
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.ai.chat.model.ChatResponse;
+import org.springframework.ai.chat.model.StreamingChatModel;
+import org.springframework.ai.ollama.OllamaChatModel;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Flux;
@@ -34,12 +37,19 @@ import reactor.core.publisher.Flux;
  * @Description: TODO
  * @Version: 1.0
  */
+@Slf4j
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/springai")
+@RequestMapping("/springAi")
 public class SpringAiController {
 
     private final ChatClient client;
+
+    // 直接注入 OllamaChatModel（不是通用 ChatModel）
+    private final OllamaChatModel chatModel;
+
+    // 必须注入 StreamingChatModel
+    private final StreamingChatModel streamingChatModel;
 
     /**
      * 聊天
@@ -53,10 +63,10 @@ public class SpringAiController {
      * @date 2026-04-14 22:34
      *
      **/
-    @GetMapping(value = "/chat", produces = "text/html;charset=utf-8")
+    /*@GetMapping(value = "/chat", produces = "text/html;charset=utf-8")
     public String chat(String prompt) {
         return client.prompt().user(prompt).call().content();
-    }
+    }*/
 
     /**
      * 流式聊天
@@ -70,8 +80,32 @@ public class SpringAiController {
      * @date 2026-04-14 23:37
      *
      **/
-    @RequestMapping(value = "/fluxChat", produces = "text/html;charset=utf-8")
-    public Flux<String> fluxChat(String prompt) {
-        return client.prompt().user(prompt).stream().content();
+    @RequestMapping(value = "/chat", produces = "text/html;charset=utf-8")
+    public Flux<String> chat(String prompt) {
+        ChatResponse chatResponse = client.prompt().user(prompt).call().chatResponse();
+        return client
+                .prompt()
+                .user(prompt).stream()
+                .content();
     }
+    /*@RequestMapping(value = "/chat", produces = "text/html;charset=utf-8")
+    public Flux<ChatResponse> chat(String prompt) {
+        *//*return chatModel.stream(new Prompt(prompt,
+                        OllamaChatOptions.builder()
+                                .model("deepseek-r1:8b")
+                                .enableThinking()
+                                .temperature(0.4)
+                                .build()))
+                .map(response -> response.getResult().getOutput().getText());*//*
+        Prompt prompt2 = new Prompt(
+                prompt,
+                OllamaChatOptions.builder()
+                        .model("deepseek-r1:8b")
+                        .enableThinking() // 开启思考
+                        .build()
+        );
+        // 返回流式 Flux 流
+        return streamingChatModel.stream(prompt2);
+    }*/
+
 }

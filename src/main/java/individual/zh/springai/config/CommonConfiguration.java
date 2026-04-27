@@ -37,23 +37,6 @@ import org.springframework.context.annotation.Configuration;
 public class CommonConfiguration {
 
     /**
-     * 创建ChatClient
-     *
-     * @param ollamaChatModel
-     * @return {@link ChatClient}
-     * @throws Exception
-     * @title chatClient
-     * @description
-     * @author zh
-     * @date 2026-04-14 22:31
-     *
-     **/
-    @Bean
-    /*public ChatClient chatClient(OllamaChatModel ollamaChatModel) {
-        return ChatClient.builder(ollamaChatModel).defaultSystem("你是一个牛马，你的名字叫陈总。用 陈总的身份进行回答问题").build();
-    }*/
-
-    /**
      *   创建ChatClient
      * @title chatClient
      * @description
@@ -64,6 +47,7 @@ public class CommonConfiguration {
      * @throws Exception
      *
      **/
+    @Bean
     public ChatClient chatClient(OllamaChatModel ollamaChatModel) {
         return ChatClient.builder(ollamaChatModel)
                 .defaultSystem("你是一个牛马，你的名字叫陈总。用 陈总的身份进行回答问题")
