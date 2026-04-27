@@ -16,11 +16,11 @@ package individual.zh.springai.controller;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.ai.chat.client.ChatClient;
-import org.springframework.ai.chat.model.ChatResponse;
-import org.springframework.ai.ollama.OllamaChatModel;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Flux;
+
+import static org.springframework.ai.chat.client.advisor.AbstractChatMemoryAdvisor.CHAT_MEMORY_CONVERSATION_ID_KEY;
 
 /**
  * <p>Titile:SpringAiController</p >
@@ -43,9 +43,6 @@ import reactor.core.publisher.Flux;
 public class SpringAiController {
 
     private final ChatClient client;
-
-    // 直接注入 OllamaChatModel（不是通用 ChatModel）
-    private final OllamaChatModel chatModel;
 
     /**
      * 聊天
@@ -77,11 +74,12 @@ public class SpringAiController {
      *
      **/
     @RequestMapping(value = "/chat", produces = "text/html;charset=utf-8")
-    public Flux<String> chat(String prompt) {
-        ChatResponse chatResponse = client.prompt().user(prompt).call().chatResponse();
+    public Flux<String> chat(String prompt, String chatId) {
         return client
                 .prompt()
-                .user(prompt).stream()
+                .user(prompt)
+                .advisors(advisor -> advisor.param(CHAT_MEMORY_CONVERSATION_ID_KEY, chatId))
+                .stream()
                 .content();
     }
     /*@RequestMapping(value = "/chat", produces = "text/html;charset=utf-8")

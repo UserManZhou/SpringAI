@@ -14,7 +14,10 @@
 package individual.zh.springai.config;
 
 import org.springframework.ai.chat.client.ChatClient;
+import org.springframework.ai.chat.client.advisor.MessageChatMemoryAdvisor;
 import org.springframework.ai.chat.client.advisor.SimpleLoggerAdvisor;
+import org.springframework.ai.chat.memory.ChatMemory;
+import org.springframework.ai.chat.memory.InMemoryChatMemory;
 import org.springframework.ai.ollama.OllamaChatModel;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -37,21 +40,43 @@ import org.springframework.context.annotation.Configuration;
 public class CommonConfiguration {
 
     /**
-     *   创建ChatClient
+     * 创建ChatMemory
+     *
+     * @param
+     * @return {@link ChatMemory}
+     * @throws Exception
+     * @title chatMemory
+     * @description
+     * @author zh
+     * @date 2026-04-27 20:54
+     *
+     **/
+    @Bean
+    public ChatMemory chatMemory() {
+        return new InMemoryChatMemory();
+    }
+
+    /**
+     * 创建ChatClient
+     *
+     * @param ollamaChatModel
+     * @return {@link ChatClient}
+     * @throws Exception
      * @title chatClient
      * @description
      * @author zh
      * @date 2026-04-15 20:25
-     * @param ollamaChatModel
-     * @return {@link ChatClient}
-     * @throws Exception
      *
      **/
     @Bean
-    public ChatClient chatClient(OllamaChatModel ollamaChatModel) {
+    public ChatClient chatClient(OllamaChatModel ollamaChatModel, ChatMemory chatMemory) {
         return ChatClient.builder(ollamaChatModel)
                 .defaultSystem("你是一个牛马，你的名字叫陈总。用 陈总的身份进行回答问题")
-                .defaultAdvisors(new SimpleLoggerAdvisor())
+                .defaultAdvisors(
+                        // @author zh @date 2026-04-27 20:53:50 @description 添加日志
+                        new SimpleLoggerAdvisor(),
+                        // @author zh @date 2026-04-27 20:53:53 @description 添加聊天记忆
+                        new MessageChatMemoryAdvisor(chatMemory))
                 .build();
     }
 }
