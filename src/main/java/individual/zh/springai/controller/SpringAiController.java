@@ -13,6 +13,7 @@
 
 package individual.zh.springai.controller;
 
+import individual.zh.springai.repository.ChatHistoryRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.ai.chat.client.ChatClient;
@@ -43,6 +44,8 @@ import static org.springframework.ai.chat.client.advisor.AbstractChatMemoryAdvis
 public class SpringAiController {
 
     private final ChatClient client;
+
+    private final ChatHistoryRepository chatHistoryRepository;
 
     /**
      * 聊天
@@ -75,6 +78,9 @@ public class SpringAiController {
      **/
     @RequestMapping(value = "/chat", produces = "text/html;charset=utf-8")
     public Flux<String> chat(String prompt, String chatId) {
+        // @author zh @date 2026-04-27 21:34:19 @description 保存会话id
+        chatHistoryRepository.save(chatId, "chat");
+        // @author zh @date 2026-04-27 21:35:11 @description 请求模型
         return client
                 .prompt()
                 .user(prompt)
