@@ -17,7 +17,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.chat.model.ChatResponse;
-import org.springframework.ai.chat.model.StreamingChatModel;
 import org.springframework.ai.ollama.OllamaChatModel;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -47,9 +46,6 @@ public class SpringAiController {
 
     // 直接注入 OllamaChatModel（不是通用 ChatModel）
     private final OllamaChatModel chatModel;
-
-    // 必须注入 StreamingChatModel
-    private final StreamingChatModel streamingChatModel;
 
     /**
      * 聊天
