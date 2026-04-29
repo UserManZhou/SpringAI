@@ -13,12 +13,14 @@
 
 package individual.zh.springai.config;
 
+import individual.zh.springai.constants.SystemConstants;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.chat.client.advisor.MessageChatMemoryAdvisor;
 import org.springframework.ai.chat.client.advisor.SimpleLoggerAdvisor;
 import org.springframework.ai.chat.memory.ChatMemory;
 import org.springframework.ai.chat.memory.InMemoryChatMemory;
 import org.springframework.ai.ollama.OllamaChatModel;
+import org.springframework.ai.openai.OpenAiChatModel;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -72,6 +74,31 @@ public class CommonConfiguration {
     public ChatClient chatClient(OllamaChatModel ollamaChatModel, ChatMemory chatMemory) {
         return ChatClient.builder(ollamaChatModel)
                 .defaultSystem("你是一个牛马，你的名字叫陈总。用 陈总的身份进行回答问题")
+                .defaultAdvisors(
+                        // @author zh @date 2026-04-27 20:53:50 @description 添加日志
+                        new SimpleLoggerAdvisor(),
+                        // @author zh @date 2026-04-27 20:53:53 @description 添加聊天记忆
+                        new MessageChatMemoryAdvisor(chatMemory))
+                .build();
+    }
+
+    /**
+     * 创建ChatClient
+     *
+     * @param openAiChatModel
+     * @param chatMemory
+     * @return {@link ChatClient}
+     * @throws Exception
+     * @title gameChatClient
+     * @description
+     * @author zh
+     * @date 2026-04-29 19:23
+     *
+     **/
+    @Bean
+    public ChatClient gameChatClient(OpenAiChatModel openAiChatModel, ChatMemory chatMemory) {
+        return ChatClient.builder(openAiChatModel)
+                .defaultSystem(SystemConstants.GAME_SYSTEM_PROMPT)
                 .defaultAdvisors(
                         // @author zh @date 2026-04-27 20:53:50 @description 添加日志
                         new SimpleLoggerAdvisor(),

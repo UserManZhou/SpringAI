@@ -15,8 +15,9 @@ package individual.zh.springai.controller;
 
 import individual.zh.springai.repository.ChatHistoryRepository;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.ai.chat.client.ChatClient;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Flux;
@@ -37,12 +38,13 @@ import static org.springframework.ai.chat.client.advisor.AbstractChatMemoryAdvis
  * @Description: TODO
  * @Version: 1.0
  */
-@Slf4j
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/springAi")
 public class SpringAiController {
 
+    @Qualifier("chatClient")
+    @Autowired
     private final ChatClient client;
 
     private final ChatHistoryRepository chatHistoryRepository;
