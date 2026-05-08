@@ -50,7 +50,7 @@ public class CourseTools {
 
     private final ISchoolService schoolService;
 
-    private ICourseReservationService courseReservationService;
+    private final ICourseReservationService courseReservationService;
 
     /**
      * 查询课程信息

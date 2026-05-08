@@ -14,6 +14,7 @@
 package individual.zh.springai.config;
 
 import individual.zh.springai.constants.SystemConstants;
+import individual.zh.springai.tools.CourseTools;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.chat.client.advisor.MessageChatMemoryAdvisor;
 import org.springframework.ai.chat.client.advisor.SimpleLoggerAdvisor;
@@ -104,6 +105,33 @@ public class CommonConfiguration {
                         new SimpleLoggerAdvisor(),
                         // @author zh @date 2026-04-27 20:53:53 @description 添加聊天记忆
                         new MessageChatMemoryAdvisor(chatMemory))
+                .build();
+    }
+
+    /**
+     * 创建ChatClient
+     *
+     * @param openAiChatModel
+     * @param chatMemory
+     * @param courseTools
+     * @return {@link ChatClient}
+     * @throws Exception
+     * @title serviceChatClient
+     * @description
+     * @author zh
+     * @date 2026-05-08 21:55
+     *
+     **/
+    @Bean
+    public ChatClient serviceChatClient(OpenAiChatModel openAiChatModel, ChatMemory chatMemory, CourseTools courseTools) {
+        return ChatClient.builder(openAiChatModel)
+                .defaultSystem(SystemConstants.SERVICES_SYSTEM_PROMPT)
+                .defaultAdvisors(
+                        // @author zh @date 2026-04-27 20:53:50 @description 添加日志
+                        new SimpleLoggerAdvisor(),
+                        // @author zh @date 2026-04-27 20:53:53 @description 添加聊天记忆
+                        new MessageChatMemoryAdvisor(chatMemory))
+                .defaultTools(courseTools)
                 .build();
     }
 }
