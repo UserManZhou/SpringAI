@@ -63,7 +63,7 @@ public class CustomerServiceController {
      *
      **/
     @RequestMapping(value = "/service", produces = "text/html;charset=utf-8")
-    public String service(String prompt, String chatId) {
+    public Flux<String> service(String prompt, String chatId) {
         // @author zh @date 2026-04-27 21:34:19 @description 保存会话id
         chatHistoryRepository.save(chatId, "service");
         // @author zh @date 2026-04-27 21:35:11 @description 请求模型
@@ -71,7 +71,7 @@ public class CustomerServiceController {
                 .prompt()
                 .user(prompt)
                 .advisors(advisor -> advisor.param(CHAT_MEMORY_CONVERSATION_ID_KEY, chatId))
-                .call()
+                .stream()
                 .content();
     }
 
