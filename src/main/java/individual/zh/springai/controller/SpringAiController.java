@@ -70,7 +70,7 @@ public class SpringAiController {
      * 流式聊天
      *
      * @param prompt
-     * @return {@link Flux< String>}
+     * @return {@link Flux<String>}
      * @throws Exception
      * @title fluxChat
      * @description

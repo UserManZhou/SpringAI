@@ -21,6 +21,7 @@ import org.springframework.ai.autoconfigure.openai.OpenAiChatProperties;
 import org.springframework.ai.autoconfigure.openai.OpenAiConnectionProperties;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.chat.client.advisor.MessageChatMemoryAdvisor;
+import org.springframework.ai.chat.client.advisor.QuestionAnswerAdvisor;
 import org.springframework.ai.chat.client.advisor.SimpleLoggerAdvisor;
 import org.springframework.ai.chat.memory.ChatMemory;
 import org.springframework.ai.chat.memory.InMemoryChatMemory;
@@ -31,6 +32,7 @@ import org.springframework.ai.ollama.OllamaChatModel;
 import org.springframework.ai.openai.OpenAiChatModel;
 import org.springframework.ai.openai.OpenAiEmbeddingModel;
 import org.springframework.ai.openai.api.OpenAiApi;
+import org.springframework.ai.vectorstore.SearchRequest;
 import org.springframework.ai.vectorstore.SimpleVectorStore;
 import org.springframework.ai.vectorstore.VectorStore;
 import org.springframework.beans.factory.ObjectProvider;
@@ -217,4 +219,43 @@ public class CommonConfiguration {
         observationConvention.ifAvailable(chatModel::setObservationConvention);
         return chatModel;
     }
+
+    /**
+     * 创建ChatClient
+     *
+     * @param openAiChatModel
+     * @param chatMemory
+     * @param vectorStore
+     * @return {@link ChatClient}
+     * @throws Exception
+     * @title pdfChatClient
+     * @description
+     * @author zh
+     * @date 2026-05-20 21:06
+     *
+     **/
+    @Bean
+    public ChatClient pdfChatClient(OpenAiChatModel openAiChatModel, ChatMemory chatMemory, VectorStore vectorStore) {
+        return ChatClient.builder(openAiChatModel)
+                .defaultSystem(SystemConstants.PDF_SYSTEM_PROMPT)
+                .defaultAdvisors(
+                        // @author zh @date 2026-04-27 20:53:50 @description 添加日志
+                        new SimpleLoggerAdvisor(),
+                        // @author zh @date 2026-04-27 20:53:53 @description 添加聊天记忆
+                        new MessageChatMemoryAdvisor(chatMemory),
+                        // @author zh @date 2026-05-20 21:07:04 @description 添加问答
+                        new QuestionAnswerAdvisor(vectorStore,
+                                // @author zh @date 2026-05-20 21:07:08 @description 创建搜索请求
+                                SearchRequest.builder()
+                                        // @author zh @date 2026-05-20 21:07:10 @description 设置相似度阈值
+                                        .similarityThreshold(0.6d)
+                                        // @author zh @date 2026-05-20 21:07:13 @description 设置返回结果数量
+                                        .topK(2)
+                                        // @author zh @date 2026-05-20 21:07:17 @description 创建搜索请求
+                                        .build()
+                        )
+                )
+                .build();
+    }
+
 }

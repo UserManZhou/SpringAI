@@ -79,8 +79,8 @@ public interface ChatHistoryRepository {
     /**
      * 通过id获取聊天记录
      *
-     * @param chatId
-     * @return {@link List< String>}
+     * @param type
+     * @return {@link List<String>}
      * @throws Exception
      * @title getChatIdsById
      * @description
