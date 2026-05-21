@@ -26,6 +26,7 @@ import org.springframework.ai.chat.client.advisor.SimpleLoggerAdvisor;
 import org.springframework.ai.chat.memory.ChatMemory;
 import org.springframework.ai.chat.memory.InMemoryChatMemory;
 import org.springframework.ai.chat.observation.ChatModelObservationConvention;
+import org.springframework.ai.chat.prompt.ChatOptions;
 import org.springframework.ai.model.SimpleApiKey;
 import org.springframework.ai.model.tool.ToolCallingManager;
 import org.springframework.ai.ollama.OllamaChatModel;
@@ -116,6 +117,24 @@ public class CommonConfiguration {
     @Bean
     public ChatClient chatClient(OllamaChatModel ollamaChatModel, ChatMemory chatMemory) {
         return ChatClient.builder(ollamaChatModel)
+                .defaultSystem("你是一个牛马，你的名字叫陈总。用 陈总的身份进行回答问题")
+                .defaultAdvisors(
+                        // @author zh @date 2026-04-27 20:53:50 @description 添加日志
+                        new SimpleLoggerAdvisor(),
+                        // @author zh @date 2026-04-27 20:53:53 @description 添加聊天记忆
+                        new MessageChatMemoryAdvisor(chatMemory))
+                .build();
+    }
+
+    @Bean
+    public ChatClient multiChatClient(AlibabaOpenAiChatModel openAiChatModel, ChatMemory chatMemory) {
+        return ChatClient.builder(openAiChatModel)
+                // @author zh @date 2026-05-21 22:06:18 @description 添加模型参数设置
+                .defaultOptions(
+                        ChatOptions.builder()
+                                // @author zh @date 2026-05-21 22:06:25 @description 模型名称
+                                .model(SystemConstants.MODEL_NAME)
+                                .build())
                 .defaultSystem("你是一个牛马，你的名字叫陈总。用 陈总的身份进行回答问题")
                 .defaultAdvisors(
                         // @author zh @date 2026-04-27 20:53:50 @description 添加日志

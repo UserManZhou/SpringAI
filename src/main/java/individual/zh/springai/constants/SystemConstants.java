@@ -130,4 +130,7 @@ public class SystemConstants {
     public static final String PDF_SYSTEM_PROMPT = """
             请根据上下文回答问题，遇到上下文没有的问题，不要随意编造
             """;
+
+    // @author zh @date 2026-05-21 22:05:25 @description 模型名称
+    public static final String MODEL_NAME = "qwen3.5-omni-plus-2026-03-15";
 }
